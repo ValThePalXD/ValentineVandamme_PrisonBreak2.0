@@ -53,6 +53,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
     [SerializeField, Tooltip("What should determine the absolute forward when a player presses forward.")]
     private Transform _absoluteForward;
 
+
     [SerializeField]
     private CharacterController _characterController;
 
@@ -102,7 +103,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
         SceneReload();
 
-
+       
 
 
 
@@ -181,7 +182,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     private void CamFollow()
     {
-        gameObject.transform.forward = new Vector3(_absoluteForward.transform.forward.x, gameObject.transform.forward.y, _absoluteForward.transform.forward.z);
+        gameObject.transform.forward = new Vector3(_absoluteForward.transform.forward.x, 0, _absoluteForward.transform.forward.z);
     }
 
     #endregion

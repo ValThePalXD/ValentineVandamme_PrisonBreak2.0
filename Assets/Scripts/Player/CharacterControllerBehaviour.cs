@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -13,8 +12,8 @@ public class CharacterControllerBehaviour : MonoBehaviour
     [SerializeField]
     private bool gameWon = false;
 
-    [SerializeField]
-    private bool gameLost = false;
+    //[SerializeField]
+    //private bool gameLost = false;
 
 
 
@@ -23,48 +22,32 @@ public class CharacterControllerBehaviour : MonoBehaviour
     private Animator _animator;
 
     [SerializeField]
-    private float InputX;
+    private float _inputX;
 
     [SerializeField]
-    private float InputY;
+    private float _inputY;
 
-
-    [Header("Animation AI")]
-    [SerializeField]
-    private Animator _animatorEnemy;
-
-    [SerializeField]
-    private Animator _animatorEnemy2;
-
-
-    [Header("Climbing Parameters")]
-
-    [SerializeField]
-    private GameObject EndPos;
-
-    [SerializeField]
-    private GameObject StartPos;
 
     [Header("Locomotion Parameters")]
     [SerializeField]
     private float _mass = 66.7f; // the average weight of an adult woman in Belgium is 66.7 kg
 
     [SerializeField]
-    private float _acceleration = 2; // [m/s^2]
+    private float _acceleration = 80; // [m/s^2]
 
     [SerializeField]
-    private float _dragOnGround = 30; // []
+    private float _dragOnGround = 15; // []
 
     [SerializeField]
-    private float _maxWalkingSpeed = (5.0f * 1000) / (60 * 60); // setting default forwardspeed
+    private float _maxWalkingSpeed = (9.5f * 1000) / (60 * 60); // setting default forwardspeed
 
     [SerializeField]
-    private float _maxForwardSpeed = (5.0f * 1000) / (60 * 60); // the average walking speed of a human is about 5 km/h
+    private float _maxForwardSpeed = (9.5f * 1000) / (60 * 60); // the average jogging speed of a human is about 9.5 km/h
 
     [SerializeField]
-    private float _maxBackwardSpeed = ((5.0f/1.3f) * 1000) / (60 * 60); //the average backwards walking speed is about 1.1 times slower than forward speed, after tweaking I found 1.3 times to make the animation smoother and more realistic
+    private float _maxBackwardSpeed = ((9.5f / 1.1f) * 1000) / (60 * 60); //the average backwards jogging speed is about 1.1 times slower than forward speed
 
-   
+
 
     [Header("Dependencies")]
     [SerializeField, Tooltip("What should determine the absolute forward when a player presses forward.")]
@@ -91,24 +74,19 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (!gameWon && !gameLost)
-        {
 
-            _movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        }
-        
-        
+        MovementPlayer();
 
-        InputY = Input.GetAxis("Vertical");
-        InputX = Input.GetAxis("Horizontal");
+        _inputY = Input.GetAxis("Vertical");
+        _inputX = Input.GetAxis("Horizontal");
 
-        _animator.SetFloat("InputY", InputY);
-        _animator.SetFloat("InputX", InputX);
+        _animator.SetFloat("InputY", _inputY);
+        _animator.SetFloat("InputX", _inputX);
 
-   
+
         //if u walk backwards, you go slower
-        if (InputY < 0f)
+        if (_inputY < 0f)
         {
 
             _maxWalkingSpeed = _maxBackwardSpeed;
@@ -124,10 +102,15 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
         SceneReload();
 
-       
 
 
 
+
+    }
+
+    private void MovementPlayer()
+    {
+        _movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
     }
     #region ReloadScene and dance
 
@@ -150,22 +133,22 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
         }
 
-        if (other.tag == "reload")
-        {
-            SceneManager.LoadScene(0);
+        //if (other.tag == "reload")
+        //{
+        //    SceneManager.LoadScene(0);
 
-        }
+        //}
 
-        if (other.tag == "praying")
-        {
-            _animatorEnemy.SetBool("Found", true);
-            _animatorEnemy2.SetBool("Found", true);
-            _animator.SetBool("IsPraying", true);
-            _movement = Vector3.zero;
-            gameLost = true;
+        //if (other.tag == "praying")
+        //{
+        //    _animatorEnemy.SetBool("Found", true);
+        //    _animatorEnemy2.SetBool("Found", true);
+        //    _animator.SetBool("IsPraying", true);
+        //    _movement = Vector3.zero;
+        //    gameLost = true;
 
 
-        }
+        //}
 
     }
 
@@ -176,21 +159,21 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     void FixedUpdate()
     {
- 
-            ApplyGround();
-            ApplyMovement();
-            ApplyGroundDrag();
 
-            AnimatorBooleans();
+        ApplyGround();
+        ApplyMovement();
+        ApplyGroundDrag();
 
-            CamFollow();
+        AnimatorBooleans();
 
-            ApplyGravity();
+        CamFollow();
 
-            LimitMaximumRunningSpeed();
-        
-            _characterController.Move(_velocity * Time.deltaTime);
-        
+        ApplyGravity();
+
+        LimitMaximumRunningSpeed();
+
+        _characterController.Move(_velocity * Time.deltaTime);
+
 
     }
 
@@ -208,8 +191,8 @@ public class CharacterControllerBehaviour : MonoBehaviour
     private void AnimatorBooleans()
     {
         _animator.SetBool("IsGrounded", _characterController.isGrounded);
-       
-       
+
+
     }
     #endregion
 
@@ -220,7 +203,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
     {
         if (_characterController.isGrounded)
         {
-          
+
 
             _velocity -= Vector3.Project(_velocity, Physics.gravity.normalized);
         }
@@ -228,9 +211,9 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     private void ApplyGravity()
     {
-        
+
         _velocity += Physics.gravity * Time.deltaTime; // g[m/s^2] * t[s]
-       
+
     }
 
     private void ApplyMovement()
@@ -277,15 +260,15 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
 
 
-    public void FinishClimb()
-    {
+    //public void FinishClimb()
+    //{
 
-        gameObject.transform.position = EndPos.transform.position;
-        _animator.SetBool("IsClimbing", false);
-      
+    //    gameObject.transform.position = _endPos.transform.position;
+    //    _animator.SetBool("IsClimbing", false);
 
-    }
-    
+
+    //}
+
     public void FinishPush()
     {
         _animator.SetBool("IsPushing", false);
@@ -307,5 +290,5 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     #endregion
 
-  
+
 }

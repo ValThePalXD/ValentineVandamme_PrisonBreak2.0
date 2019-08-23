@@ -25761,9 +25761,9 @@ MonoBehaviour:
   _animator: {fileID: 889226393}
   _inputX: 0
   _inputY: 0
-  _mass: 66.7
+  _mass: 62
   _acceleration: 80
-  _dragOnGround: 15
+  _dragOnGround: 30
   _maxWalkingSpeed: 2.6388888
   _maxForwardSpeed: 2.6388888
   _maxBackwardSpeed: 2.39899
@@ -25799,13 +25799,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
+  m_Height: 1.8
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.97, z: 0}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!4 &889226395
 Transform:
   m_ObjectHideFlags: 0
@@ -25818,6 +25818,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1073008110}
+  - {fileID: 1310237345}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -31910,13 +31911,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c64affe4516f3d4291860fb2a2312a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _lookAt: {fileID: 889226395}
+  _lookAt: {fileID: 1310237345}
   _camTransForm: {fileID: 1103635098}
-  _minYAngle: 0
-  _maxYAngle: 89
-  _distance: 5
-  _currentY: 0
-  _currentX: 0
+  _minYAngle: 20
+  _maxYAngle: 80
+  _distance: 3
+  _currentY: 45
+  _currentX: 90
 --- !u!43 &1120583249
 Mesh:
   m_ObjectHideFlags: 0
@@ -37256,6 +37257,36 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1310237344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1310237345}
+  m_Layer: 0
+  m_Name: LookAt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1310237345
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310237344}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.367, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 889226395}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1311462430
 Mesh:
   m_ObjectHideFlags: 0

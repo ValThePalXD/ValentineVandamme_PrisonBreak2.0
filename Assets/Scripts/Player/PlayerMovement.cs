@@ -48,17 +48,9 @@ public class PlayerMovement : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
       
     }
-    private void Update()
-    {
-        if (Input.GetButton("Jump"))
-        {
-            _isJumping = true;
-        }
-    }
-
+  
     void FixedUpdate()
     {
-
         ApplyGround();
         ApplyMovement();
         ApplyGroundDrag();                    
@@ -68,8 +60,7 @@ public class PlayerMovement : MonoBehaviour
         
         _characterController.Move(_velocity * Time.deltaTime);
 
-        SlowerBackwards();
-       
+        SlowerBackwards();       
     }
 
 
@@ -162,6 +153,11 @@ public class PlayerMovement : MonoBehaviour
         Vector3 tempRotation = transform.eulerAngles;
         tempRotation.y += rotation;
         transform.eulerAngles = tempRotation;
+    }
+
+    public void Jump()
+    {
+        _isJumping = true;
     }
 
 

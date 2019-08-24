@@ -17,11 +17,7 @@ public class PushObjectScript : MonoBehaviour
     {
         _rigidBody = GetComponent<Rigidbody>();
     }
-
-    private void Update()
-    {        
-        
-    }
+  
 
     public void PushObject(Vector3 pushorigin)
     {

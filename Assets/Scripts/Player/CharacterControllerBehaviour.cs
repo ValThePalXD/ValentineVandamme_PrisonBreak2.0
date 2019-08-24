@@ -29,7 +29,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
     private float _leftJoyStickX;
     [SerializeField]
     private float _leftJoyStickY;
-       
+
 
     [Header("Camera Parameters")]
     [SerializeField]
@@ -54,22 +54,27 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     void Update()
     {
-        HandleJoyStickInput();
+        SceneReload();
+        if (_isKicking)
+        {
+            return;
+        }
+            Debug.Log("aaaa");
 
-         MovePlayer();
+        HandleJoyStickInput();
+        MovePlayer();
         _playerMovement.RotatePlayerHorizontally(_xRotation * _xRotationSpeed * Time.deltaTime);
         _camController.RotateCamVertically(_yRotation * _yRotationSpeed * Time.deltaTime);
-        
+
         _animationController.SetInputX(_leftJoyStickX);
-        _animationController.SetInputY(_leftJoyStickY);     
-               
-        if(Input.GetButtonDown("Jump"))
+        _animationController.SetInputY(_leftJoyStickY);
+
+        if (Input.GetButtonDown("Jump"))
         {
             _playerMovement.Jump();
             _animationController.Jump();
         }
-        SceneReload();         
-   }
+    }
 
     #region MovementPlayer
 
@@ -94,9 +99,9 @@ public class CharacterControllerBehaviour : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         PushObjectScript pushobject = other.GetComponent<PushObjectScript>();
-        if (pushobject && Input.GetButtonDown("Push"))
+        if (pushobject && Input.GetButtonDown("Push") && !_isKicking)
         {
-            pushobject = _pushObject;
+            _pushObject = pushobject;
             KickObject(other.transform);
             return;
         }
@@ -111,7 +116,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
         }
 
-        
+
 
         //if (other.tag == "reload")
         //{
@@ -154,18 +159,9 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
 
     //}
-    private void Kick()
-    {
-        _pushObject.PushObject(transform.position);
+    
 
-    }
-
-    private void FinishKick()
-    {
-        _isKicking = false;
-       
-    }
-
+   
     public void ButtonPressed()
     {
         _animator.SetBool("IsPressing", false);
@@ -192,13 +188,12 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     private IEnumerator RotateToObstacle()
     {
-        while (Quaternion.Angle(transform.rotation, Quaternion.LookRotation(_objectDirection))> 2f)
+        while (Quaternion.Angle(transform.rotation, Quaternion.LookRotation(_objectDirection)) > 2f)
         {
             Vector3 newDirection = Vector3.RotateTowards(transform.forward, _objectDirection, 0.04f, 0.0f);
             transform.rotation = Quaternion.LookRotation(newDirection);
             yield return true;
         }
-
         DoKick();
     }
 
@@ -207,12 +202,24 @@ public class CharacterControllerBehaviour : MonoBehaviour
         _animationController.Kick();
     }
 
+    public void KickTouch()
+    {
+        _pushObject.PushObject(_objectDirection);
+        
+    }
+
+    public void StopKicking()
+    {
+        _isKicking = false;
+    }
+
     private void KickObject(Transform kickObject)
     {
         _isKicking = true;
+        _playerMovement.Stop();
         GetObjectDirection(kickObject.position);
         StartCoroutine(RotateToObstacle());
-        
+
     }
 
     private void GetObjectDirection(Vector3 objectPosition)
@@ -231,6 +238,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
         _objectDirection.y = 0;
     }
 
+   
     
 
 }

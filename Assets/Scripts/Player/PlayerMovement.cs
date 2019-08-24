@@ -160,5 +160,11 @@ public class PlayerMovement : MonoBehaviour
         _isJumping = true;
     }
 
+    public void Stop()
+    {
+        _velocity = Vector3.zero;
+        Movement = Vector3.zero;
+    }
+
 
 }

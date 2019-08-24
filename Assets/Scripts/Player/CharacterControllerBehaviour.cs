@@ -150,20 +150,6 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
 
 
-    #region AnimationEvents
-
-
-
-    //public void FinishClimb()
-    //{
-
-    //    gameObject.transform.position = _endPos.transform.position;
-    //    _animator.SetBool("IsClimbing", false);
-
-
-    //}
-    
-
    
     public void ButtonPressed()
     {

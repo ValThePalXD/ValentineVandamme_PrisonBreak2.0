@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(PlayerMovement))]
 public class CharacterControllerBehaviour : MonoBehaviour
 {
     [Header("Game won?")]
@@ -15,107 +15,62 @@ public class CharacterControllerBehaviour : MonoBehaviour
     //[SerializeField]
     //private bool gameLost = false;
 
-
+    private PlayerMovement _playerMovement;
+    private AnimationController _animationController;
 
     [Header("Animation Parameters")]
     [SerializeField]
     private Animator _animator;
-
     [SerializeField]
-    private float _inputX;
-
+    private float _leftJoyStickX;
     [SerializeField]
-    private float _inputY;
+    private float _leftJoyStickY;
+       
 
-
-    [Header("Locomotion Parameters")]
+    [Header("Camera Parameters")]
     [SerializeField]
-    private float _mass = 66.7f; // the average weight of an adult woman in Belgium is 66.7 kg
-
+    private float _yRotation;
     [SerializeField]
-    private float _acceleration = 80; // [m/s^2]
-
+    private float _xRotation;
     [SerializeField]
-    private float _dragOnGround = 15; // []
-
+    private float _yRotationSpeed;
     [SerializeField]
-    private float _maxWalkingSpeed = (9.5f * 1000) / (60 * 60); // setting default forwardspeed
-
+    private float _xRotationSpeed;
     [SerializeField]
-    private float _maxForwardSpeed = (9.5f * 1000) / (60 * 60); // the average jogging speed of a human is about 9.5 km/h
-
-    [SerializeField]
-    private float _maxBackwardSpeed = ((9.5f / 1.1f) * 1000) / (60 * 60); //the average backwards jogging speed is about 1.1 times slower than forward speed
-
-    [SerializeField]
-    private float _jump;
-
-
-
-    [Header("Dependencies")]
-    [SerializeField, Tooltip("What should determine the absolute forward when a player presses forward.")]
-    private Transform _absoluteForward;
-
-
-    [SerializeField]
-    private CharacterController _characterController;
-
-    private Vector3 _velocity = Vector3.zero;
-
-    private Vector3 _movement;
+    private CameraController _camController;
 
 
     void Start()
     {
-        _characterController = GetComponent<CharacterController>();
-        _animator = this.gameObject.GetComponent<Animator>();
-#if DEBUG
-        Assert.IsNotNull(_animator, "Dependency Error: This component needs an Animator  to work.");
-        Assert.IsNotNull(_characterController, "Dependency Error: This component needs a CharacterController to work.");
-        Assert.IsNotNull(_absoluteForward, "Dependency Error: Set the Absolute Forward field.");
-#endif
+        _playerMovement = GetComponent<PlayerMovement>();
+        _animator = GetComponent<Animator>();
+        _animationController = new AnimationController(_animator);
+
     }
 
     void Update()
     {
+        HandleJoyStickInput();
 
+         MovePlayer();
+        _playerMovement.RotatePlayerHorizontally(_xRotation * _xRotationSpeed * Time.deltaTime);
+        _camController.RotateCamVertically(_yRotation * _yRotationSpeed * Time.deltaTime);
+        
+        _animationController.SetInputX(_leftJoyStickX);
+        _animationController.SetInputY(_leftJoyStickY);     
+               
+        SceneReload();         
+   }
 
-        MovementPlayer();
+    #region MovementPlayer
 
-        _inputY = Input.GetAxis("Vertical");
-        _inputX = Input.GetAxis("Horizontal");
-
-        _animator.SetFloat("InputY", _inputY);
-        _animator.SetFloat("InputX", _inputX);
-
-
-        //if u walk backwards, you go slower
-        if (_inputY < 0f)
-        {
-
-            _maxWalkingSpeed = _maxBackwardSpeed;
-
-        }
-        else
-        {
-
-            _maxWalkingSpeed = _maxForwardSpeed;
-
-        }
-
-
-        SceneReload();
-
-       
-
-
-
-    }
-
-    private void MovementPlayer()
+    private void MovePlayer()
     {
-        _movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        _playerMovement.Movement = new Vector3(_leftJoyStickX, 0, _leftJoyStickY);
     }
+
+    #endregion
+
     #region ReloadScene and dance
 
 
@@ -133,7 +88,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
         {
             _animator.SetBool("IsDancing", true);
             gameWon = true;
-            this.gameObject.transform.position = Vector3.Lerp(this.gameObject.transform.position, other.gameObject.transform.position, 0.5f);
+            transform.position = Vector3.Lerp(this.gameObject.transform.position, other.gameObject.transform.position, 0.5f);
 
         }
 
@@ -161,103 +116,17 @@ public class CharacterControllerBehaviour : MonoBehaviour
     #endregion
 
 
-    void FixedUpdate()
-    {
-
-        ApplyGround();
-        ApplyMovement();
-        ApplyGroundDrag();
-
-        AnimatorBooleans();
-
-        CamFollow();
-
-        ApplyGravity();
-
-        LimitMaximumRunningSpeed();
-
-        _characterController.Move(_velocity * Time.deltaTime);
-
-
-    }
-
-    #region Camera
-
-    private void CamFollow()
-    {
-        gameObject.transform.forward = new Vector3(_absoluteForward.transform.forward.x, 0, _absoluteForward.transform.forward.z);
-    }
-
-    #endregion
-
-
     #region Animator
     private void AnimatorBooleans()
     {
-        _animator.SetBool("IsGrounded", _characterController.isGrounded);
+        _animator.SetBool("IsGrounded", _playerMovement.IsGrounded);
 
 
     }
     #endregion
 
 
-    #region CharController
-
-    private void ApplyGround()
-    {
-        if (_characterController.isGrounded)
-        {
-
-
-            _velocity -= Vector3.Project(_velocity, Physics.gravity.normalized);
-        }
-    }
-
-    private void ApplyGravity()
-    {
-
-        _velocity += Physics.gravity * Time.deltaTime; // g[m/s^2] * t[s]
-
-    }
-
-    private void ApplyMovement()
-    {
-        if (_characterController.isGrounded)
-        {
-            Vector3 xzAbsoluteForward = Vector3.Scale(_absoluteForward.forward, new Vector3(1, 0, 1));
-
-            Quaternion forwardRotation =
-                Quaternion.LookRotation(xzAbsoluteForward);
-
-            Vector3 relativeMovement = forwardRotation * _movement;
-
-            _velocity += relativeMovement * _mass * _acceleration * Time.deltaTime; // F(= m.a) [m/s^2] * t [s]
-        }
-    }
-
-    private void ApplyGroundDrag()
-    {
-        if (_characterController.isGrounded)
-        {
-            _velocity = _velocity * (1 - Time.deltaTime * _dragOnGround);
-        }
-    }
-
-
-
-
-
-    private void LimitMaximumRunningSpeed()
-    {
-        Vector3 yVelocity = Vector3.Scale(_velocity, new Vector3(0, 1, 0));
-
-        Vector3 xzVelocity = Vector3.Scale(_velocity, new Vector3(1, 0, 1));
-        Vector3 clampedXzVelocity = Vector3.ClampMagnitude(xzVelocity, _maxWalkingSpeed);
-
-        _velocity = yVelocity + clampedXzVelocity;
-    }
-
-    #endregion
+   
 
 
     #region AnimationEvents
@@ -294,5 +163,13 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     #endregion
 
+    private void HandleJoyStickInput()
+    {
+        _leftJoyStickY = Input.GetAxis("Vertical");
+        _leftJoyStickX = Input.GetAxis("Horizontal");
+
+        _xRotation = Input.GetAxis("HorizontalCam");
+        _yRotation = Input.GetAxis("VerticalCam");
+    }
 
 }

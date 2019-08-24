@@ -70,7 +70,9 @@
     <Compile Include="Assets\ProCore\ProBuilder\API Examples\Vertex Colors\HighlightNearestFace.cs" />
     <Compile Include="Assets\Scripts\Animations\AnimationController.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraController.cs" />
+    <Compile Include="Assets\Scripts\IK\PickUpWeaponIK.cs" />
     <Compile Include="Assets\Scripts\Interactables\PushObjectScript.cs" />
+    <Compile Include="Assets\Scripts\Interactables\WeaponScript.cs" />
     <Compile Include="Assets\Scripts\Player\CharacterControllerBehaviour.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <None Include="Assets\ProCore\ProBuilder\Shader\pb_TransparentOverlay.shader" />

@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class AnimationController 
 {
-    private Animator _animator;
+    private Animator _animator;    
     private int _inputX = Animator.StringToHash("InputX");
     private int _inputY = Animator.StringToHash("InputY");
     private int _jump = Animator.StringToHash("Jump");
     private int _kick = Animator.StringToHash("Kick");
+    private int _pickup = Animator.StringToHash("Pickup");
+
+    public readonly PickUpWeaponIK pickUpWeaponIK;    
+
+    public void Pickup()
+    {
+        _animator.SetTrigger(_pickup);
+    }
 
     public void Kick()
     {
@@ -33,5 +41,6 @@ public class AnimationController
     public AnimationController(Animator animator)
     {
         _animator = animator;
+        pickUpWeaponIK = _animator.GetBehaviour<PickUpWeaponIK>();
     }
 }

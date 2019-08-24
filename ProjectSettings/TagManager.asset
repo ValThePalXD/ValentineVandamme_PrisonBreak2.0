@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Forward
   - Right
+  - Weapon
   layers:
   - Default
   - TransparentFX

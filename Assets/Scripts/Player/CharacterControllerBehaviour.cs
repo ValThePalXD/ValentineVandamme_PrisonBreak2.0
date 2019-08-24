@@ -10,13 +10,11 @@ public class CharacterControllerBehaviour : MonoBehaviour
     [SerializeField]
     private bool gameWon = false;
 
-    //[SerializeField]
-    //private bool gameLost = false;
-
     private PlayerMovement _playerMovement;
     private AnimationController _animationController;
 
     private bool _isKicking;
+    private bool _isPickingUp;
 
     private Vector3 _objectDirection = Vector3.zero;
 
@@ -43,6 +41,11 @@ public class CharacterControllerBehaviour : MonoBehaviour
     [SerializeField]
     private CameraController _camController;
 
+    [Header("IK Parameters")]
+    [SerializeField]
+    private Transform _rightHand;
+    private WeaponScript _weaponScript;
+
 
     void Start()
     {
@@ -55,11 +58,11 @@ public class CharacterControllerBehaviour : MonoBehaviour
     void Update()
     {
         SceneReload();
-        if (_isKicking)
+        if (_isKicking || _isPickingUp)
         {
             return;
         }
-            Debug.Log("aaaa");
+                  
 
         HandleJoyStickInput();
         MovePlayer();
@@ -106,23 +109,23 @@ public class CharacterControllerBehaviour : MonoBehaviour
             return;
         }
 
-
-        if (other.tag == "dance")
+        WeaponScript weapon = other.GetComponent<WeaponScript>();
+        if (weapon && Input.GetButtonDown("Interact") && !_isPickingUp)
         {
-            _animator.SetBool("IsDancing", true);
-            gameWon = true;
-            transform.position = Vector3.Lerp(this.gameObject.transform.position, other.gameObject.transform.position, 0.5f);
-            return;
-
+            _weaponScript = weapon;
+            _isPickingUp = true;
+            _animationController.pickUpWeaponIK.WeaponScript = weapon;
+            _animationController.Pickup();
+            weapon.DisablePickUp();
+            _playerMovement.Stop();
+            
         }
 
+        if (other.tag == "reload")
+        {
+            SceneManager.LoadScene(0);
 
-
-        //if (other.tag == "reload")
-        //{
-        //    SceneManager.LoadScene(0);
-
-        //}
+        }
 
         //if (other.tag == "praying")
         //{
@@ -225,20 +228,30 @@ public class CharacterControllerBehaviour : MonoBehaviour
     private void GetObjectDirection(Vector3 objectPosition)
     {
         _objectDirection = objectPosition - transform.position;
-        if (_objectDirection.x > _objectDirection.z)
+        if (Mathf.Abs(_objectDirection.x) > Mathf.Abs(_objectDirection.z))
         {
             _objectDirection.z = 0;
-            _objectDirection.x = 1;
+            _objectDirection.x /= Mathf.Abs(_objectDirection.x);
         }
         else
         {
-            _objectDirection.z = 1;
+            _objectDirection.z /= Mathf.Abs(_objectDirection.z);
             _objectDirection.x = 0;
         }
         _objectDirection.y = 0;
     }
 
-   
-    
+
+
+    private void PickUpWeapon()
+    {
+        _weaponScript.transform.parent = _rightHand;
+        _weaponScript.SetPositionAndRotationInHand();
+    }
+
+    public void StopPickingUp()
+    {
+        _isPickingUp = false;
+    }
 
 }

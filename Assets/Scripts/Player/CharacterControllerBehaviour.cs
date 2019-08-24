@@ -88,17 +88,19 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     #endregion
 
-    #region ReloadScene and dance
 
 
+    #region ReloadScene
     private void SceneReload()
     {
         if (Input.GetButtonDown("Reset"))
         {
-            SceneManager.LoadScene(0);
+            ResetGame();
         }
     }
+    #endregion
 
+    #region Triggers
     private void OnTriggerStay(Collider other)
     {
         PushObjectScript pushobject = other.GetComponent<PushObjectScript>();
@@ -121,10 +123,9 @@ public class CharacterControllerBehaviour : MonoBehaviour
             
         }
 
-        if (other.tag == "reload")
+        if (other.gameObject.tag == "Fall")
         {
-            SceneManager.LoadScene(0);
-
+            Fall();
         }
 
         //if (other.tag == "praying")
@@ -137,35 +138,10 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
 
         //}
-
     }
-
-
-
     #endregion
 
-
-
-
-
-
-
-   
-    public void ButtonPressed()
-    {
-        _animator.SetBool("IsPressing", false);
-    }
-
-
-    public void FinishPray()
-    {
-        _animator.SetBool("IsPraying", false);
-        SceneManager.LoadScene(0);
-    }
-
-
-    #endregion
-
+    #region JoyStickInput
     private void HandleJoyStickInput()
     {
         _leftJoyStickY = Input.GetAxis("Vertical");
@@ -174,7 +150,9 @@ public class CharacterControllerBehaviour : MonoBehaviour
         _xRotation = Input.GetAxis("HorizontalCam");
         _yRotation = Input.GetAxis("VerticalCam");
     }
+    #endregion
 
+    #region Kick
     private IEnumerator RotateToObstacle()
     {
         while (Quaternion.Angle(transform.rotation, Quaternion.LookRotation(_objectDirection)) > 2f)
@@ -210,7 +188,10 @@ public class CharacterControllerBehaviour : MonoBehaviour
         StartCoroutine(RotateToObstacle());
 
     }
+    #endregion
 
+
+    #region GetDirection
     private void GetObjectDirection(Vector3 objectPosition)
     {
         _objectDirection = objectPosition - transform.position;
@@ -226,9 +207,10 @@ public class CharacterControllerBehaviour : MonoBehaviour
         }
         _objectDirection.y = 0;
     }
+    #endregion
 
 
-
+    #region Pickup
     private void PickUpWeapon()
     {
         _weaponScript.transform.parent = _rightHand;
@@ -239,5 +221,17 @@ public class CharacterControllerBehaviour : MonoBehaviour
     {
         _isPickingUp = false;
     }
+    #endregion
 
+    #region Fall
+    private void Fall()
+    {
+        _animationController.Falling();
+    }
+
+    public void ResetGame()
+    {
+        SceneManager.LoadScene(0);
+    }
+    #endregion
 }

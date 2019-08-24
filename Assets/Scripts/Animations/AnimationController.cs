@@ -10,8 +10,14 @@ public class AnimationController
     private int _jump = Animator.StringToHash("Jump");
     private int _kick = Animator.StringToHash("Kick");
     private int _pickup = Animator.StringToHash("Pickup");
+    private int _falling = Animator.StringToHash("Falling");
 
     public readonly PickUpWeaponIK pickUpWeaponIK;    
+
+    public void Falling()
+    {
+        _animator.SetTrigger(_falling);
+    }
 
     public void Pickup()
     {

@@ -47858,8 +47858,8 @@ GameObject:
   - component: {fileID: 2145396360}
   - component: {fileID: 2145396359}
   m_Layer: 0
-  m_Name: Cube
-  m_TagString: Untagged
+  m_Name: FallTrigger
+  m_TagString: Fall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

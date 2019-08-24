@@ -42,10 +42,15 @@ public class PlayerMovement : MonoBehaviour
 
     public bool IsGrounded { get => _characterController.isGrounded; }
 
+    private void Start()
+    {
+        
+        _characterController = GetComponent<CharacterController>();
+      
+    }
     private void Update()
     {
-        _characterController = GetComponent<CharacterController>();
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButton("Jump"))
         {
             _isJumping = true;
         }

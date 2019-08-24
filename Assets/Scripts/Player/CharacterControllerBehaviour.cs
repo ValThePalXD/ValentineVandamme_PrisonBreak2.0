@@ -76,7 +76,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     private void SceneReload()
     {
-        if (Input.GetButton("XButton"))
+        if (Input.GetButton("Reset"))
         {
             SceneManager.LoadScene(0);
         }
@@ -84,13 +84,24 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        PushObjectScript pushobject = other.GetComponent<PushObjectScript>();
+        if (pushobject && Input.GetKeyDown(KeyCode.A))
+        {
+            pushobject.PushObject(transform.position);
+            return;
+        }
+
+
         if (other.tag == "dance")
         {
             _animator.SetBool("IsDancing", true);
             gameWon = true;
             transform.position = Vector3.Lerp(this.gameObject.transform.position, other.gameObject.transform.position, 0.5f);
+            return;
 
         }
+
+        
 
         //if (other.tag == "reload")
         //{

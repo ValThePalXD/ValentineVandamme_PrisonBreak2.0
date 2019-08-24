@@ -8,6 +8,12 @@ public class AnimationController
     private int _inputX = Animator.StringToHash("InputX");
     private int _inputY = Animator.StringToHash("InputY");
     private int _jump = Animator.StringToHash("Jump");
+    private int _kick = Animator.StringToHash("Kick");
+
+    public void Kick()
+    {
+        _animator.SetTrigger(_kick);
+    }
 
     public void Jump()
     {

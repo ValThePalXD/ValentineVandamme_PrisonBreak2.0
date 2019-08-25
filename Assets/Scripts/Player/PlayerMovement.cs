@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private float _maxBackwardSpeed = ((9.5f / 1.1f) * 1000) / (60 * 60); //the average backwards jogging speed is about 1.1 times slower than forward speed
 
     [Header("Jump Parameters")]
-     public bool _isJumping;
+    public bool _isJumping;
     [SerializeField]
     private float _jumpHeight;
 

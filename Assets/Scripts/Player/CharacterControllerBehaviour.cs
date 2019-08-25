@@ -134,7 +134,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
             _enemyController = other.GetComponent<EnemyController>();
             _toHit = tohit;
             _isHitting = true;
-            Hit();
+            Hit(other.transform);
             _toHit.DisableHitbox();
             _playerMovement.Stop();
 
@@ -177,8 +177,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
             Vector3 newDirection = Vector3.RotateTowards(transform.forward, _objectDirection, 0.04f, 0.0f);
             transform.rotation = Quaternion.LookRotation(newDirection);
             yield return true;
-        }
-        DoKick();
+        }       
     }
 
     private void DoKick()
@@ -203,6 +202,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
         _playerMovement.Stop();
         GetObjectDirection(kickObject.position);
         StartCoroutine(RotateToObstacle());
+        DoKick();
 
     }
     #endregion
@@ -242,14 +242,21 @@ public class CharacterControllerBehaviour : MonoBehaviour
     #endregion
 
     #region Hit/Attack
-    private void Hit()
+    private void Hit(Transform enemy)
     {
+        GetObjectDirection(enemy.position);
+        StartCoroutine(RotateToObstacle());
         _animationController.Attacking();
     }
 
     public void AttackHit()
     {      
         _enemyController.DeathAnimation();
+    }
+
+    public void StopHitting()
+    {
+        _isHitting = false;
     }
     #endregion
 

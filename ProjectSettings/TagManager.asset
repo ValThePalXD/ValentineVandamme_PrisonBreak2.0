@@ -9,6 +9,7 @@ TagManager:
   - Weapon
   - Fall
   - Crouch
+  - Seen
   layers:
   - Default
   - TransparentFX

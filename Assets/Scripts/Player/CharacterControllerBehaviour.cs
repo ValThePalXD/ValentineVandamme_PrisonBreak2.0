@@ -11,14 +11,14 @@ public class CharacterControllerBehaviour : MonoBehaviour
     private bool gameWon = false;
 
     private PlayerMovement _playerMovement;
-    private AnimationController _animationController;
- 
+    private AnimationController _animationController; 
 
     private bool _isKicking;
     private bool _isPickingUp;
     private bool _pickedUp;
     private bool _isHitting;
     private bool _isFalling;
+    private bool _isSeen;
 
     private Vector3 _objectDirection = Vector3.zero;
 
@@ -64,7 +64,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
     void Update()
     {
         SceneReload();
-        if (_isKicking || _isPickingUp || _isHitting)
+        if (_isKicking || _isPickingUp || _isHitting || _isSeen)
         {
             return;
         }                  
@@ -130,10 +130,19 @@ public class CharacterControllerBehaviour : MonoBehaviour
             _enemyController = other.GetComponent<EnemyController>();
             _toHit = tohit;
             _isHitting = true;
-            Hit(other.transform);
+            Hit(other.transform.parent);
             _toHit.DisableHitbox();
             _playerMovement.Stop();
 
+        }
+
+       
+        if (other.tag == "Seen" && !_isHitting)
+        {
+            _enemyController = other.GetComponentInParent<EnemyController>();           
+            _isSeen = true;
+            _playerMovement.Stop();           
+            Seen(other.transform);
         }
 
         if (other.gameObject.tag == "Fall")
@@ -255,6 +264,21 @@ public class CharacterControllerBehaviour : MonoBehaviour
     public void ResetGame()
     {
         SceneManager.LoadScene(0);
+    }
+    #endregion
+
+    #region Seen
+    private void Seen(Transform enemy)
+    {
+        _animationController.Seen();
+        _enemyController.Seeing();       
+        GetObjectDirection(enemy.position);
+        StartCoroutine(RotateToObstacle());        
+    }
+
+    public void SeenReset()
+    {
+        ResetGame();
     }
     #endregion
 }

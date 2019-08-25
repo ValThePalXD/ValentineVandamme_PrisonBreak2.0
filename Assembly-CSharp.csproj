@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\AI\EnemyController.cs" />
     <Compile Include="Assets\Scripts\AI\SpecialActions\AICrouchAction.cs" />
     <Compile Include="Assets\Scripts\AI\SpecialActions\HitScript.cs" />
+    <Compile Include="Assets\Scripts\AI\SpecialActions\SeenScript.cs" />
     <Compile Include="Assets\Scripts\Animations\AnimationController.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraController.cs" />
     <Compile Include="Assets\Scripts\IK\PickUpWeaponIK.cs" />

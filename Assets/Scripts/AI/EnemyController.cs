@@ -10,10 +10,19 @@ public class EnemyController : MonoBehaviour
     private Animator _animator;
 
     [SerializeField]
+    private CharacterControllerBehaviour _character;
+
+    [SerializeField]
     private NavMeshAgent _agent;
 
     private int _fallDead = Animator.StringToHash("FallDead");
     private int _isCrouching = Animator.StringToHash("IsCrouching");
+    private int _seeing = Animator.StringToHash("Seeing");
+
+    public void Seeing()
+    {
+        _animator.SetTrigger(_seeing);
+    }
 
     public void DeathAnimation()
     {    

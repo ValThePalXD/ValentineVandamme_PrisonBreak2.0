@@ -51,7 +51,7 @@ public class AIBehaviour : MonoBehaviour
 
     private void Update()
     {
-        if (_animator.GetBool("Found"))
+        if (_animator.GetBool("Seeing"))
         {            
             _caughtPlayer = true;
         }
@@ -89,8 +89,7 @@ public class AIBehaviour : MonoBehaviour
     IEnumerator<NodeResult> Patrolling()
     {
         AIAnimation();
-        _agent.speed = 2;
-        Debug.Log("poop");
+        _agent.speed = 2;        
         if (_agent.remainingDistance <= _agent.stoppingDistance)
         {
             float newTarget = Random.Range(0, 100);

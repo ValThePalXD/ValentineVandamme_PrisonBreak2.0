@@ -30279,7 +30279,6 @@ GameObject:
   - component: {fileID: 1269681160}
   - component: {fileID: 1269681164}
   - component: {fileID: 1269681161}
-  - component: {fileID: 1269681165}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -30416,6 +30415,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 1269681156}
+  _character: {fileID: 0}
   _agent: {fileID: 1269681164}
 --- !u!195 &1269681164
 NavMeshAgent:
@@ -30439,19 +30439,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!65 &1269681165
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1269681154}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.1, z: 1.5}
-  m_Center: {x: 0, y: 1.7, z: 0.8}
 --- !u!1 &1283405438
 GameObject:
   m_ObjectHideFlags: 0
@@ -36831,9 +36818,10 @@ GameObject:
   - component: {fileID: 1544710792}
   - component: {fileID: 1544710794}
   - component: {fileID: 1544710793}
+  - component: {fileID: 1544710796}
   m_Layer: 0
   m_Name: Vision
-  m_TagString: Untagged
+  m_TagString: Seen
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36897,6 +36885,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1544710791}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &1544710796
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544710791}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.0000002, y: 1, z: 1.0000002}
+  m_Center: {x: -0.000015258789, y: 0, z: -0.0000009536743}
 --- !u!43 &1563939027
 Mesh:
   m_ObjectHideFlags: 0

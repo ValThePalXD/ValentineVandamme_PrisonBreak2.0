@@ -12,13 +12,18 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     private PlayerMovement _playerMovement;
     private AnimationController _animationController;
+ 
 
     private bool _isKicking;
     private bool _isPickingUp;
+    private bool _pickedUp;
+    private bool _isHitting;
 
     private Vector3 _objectDirection = Vector3.zero;
 
     private PushObjectScript _pushObject;
+    private HitScript _toHit;
+    private EnemyController _enemyController;
 
     [Header("Animation Parameters")]
     [SerializeField]
@@ -52,13 +57,14 @@ public class CharacterControllerBehaviour : MonoBehaviour
         _playerMovement = GetComponent<PlayerMovement>();
         _animator = GetComponent<Animator>();
         _animationController = new AnimationController(_animator);
+        _enemyController = new EnemyController();
 
     }
 
     void Update()
     {
         SceneReload();
-        if (_isKicking || _isPickingUp)
+        if (_isKicking || _isPickingUp || _isHitting)
         {
             return;
         }
@@ -121,6 +127,17 @@ public class CharacterControllerBehaviour : MonoBehaviour
             weapon.DisablePickUp();
             _playerMovement.Stop();
             
+        }
+
+        HitScript tohit = other.GetComponent<HitScript>();
+        if (tohit && _pickedUp && Input.GetButtonDown("Interact") && !_isHitting)
+        {
+            _toHit = tohit;
+            _isHitting = true;
+            Hit();
+            _toHit.DisableHitbox();
+            _playerMovement.Stop();
+
         }
 
         if (other.gameObject.tag == "Fall")
@@ -220,6 +237,19 @@ public class CharacterControllerBehaviour : MonoBehaviour
     public void StopPickingUp()
     {
         _isPickingUp = false;
+        _pickedUp = true;
+    }
+    #endregion
+
+    #region Hit/Attack
+    private void Hit()
+    {
+        _animationController.Attacking();
+    }
+
+    public void AttackHit()
+    {      
+        _enemyController.DeathAnimation();
     }
     #endregion
 

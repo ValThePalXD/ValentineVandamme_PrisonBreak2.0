@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBehaviour : MonoBehaviour
+public class EnemyController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [Header("Animation Parameters")]
+    [SerializeField]
+    private Animator _animator;
 
-    // Update is called once per frame
-    void Update()
+     
+    public void DeathAnimation()
     {
-        
+        Debug.Log("aaaa");
+        _animator.SetTrigger("FallDead");
     }
 }

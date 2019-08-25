@@ -26,11 +26,4 @@ public class WeaponScript : MonoBehaviour
         transform.localPosition = _positionInHand;
         transform.localEulerAngles = _rotationInHand;
     }
-#if UNITY_EDITOR
-    private void Update()
-    {
-        if (transform.parent)
-            SetPositionAndRotationInHand();
-    }
-#endif
 }

@@ -15,7 +15,6 @@ public class EnemyActionsController : MonoBehaviour
 
     public void Death()
     {
-        
         _animator.SetTrigger(_fallDead);
     }
 

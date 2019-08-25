@@ -57,8 +57,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
         _playerMovement = GetComponent<PlayerMovement>();
         _animator = GetComponent<Animator>();
         _animationController = new AnimationController(_animator);
-        _enemyController = new EnemyController();
-
+        
     }
 
     void Update()
@@ -132,6 +131,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
         HitScript tohit = other.GetComponent<HitScript>();
         if (tohit && _pickedUp && Input.GetButtonDown("Interact") && !_isHitting)
         {
+            _enemyController = other.GetComponent<EnemyController>();
             _toHit = tohit;
             _isHitting = true;
             Hit();

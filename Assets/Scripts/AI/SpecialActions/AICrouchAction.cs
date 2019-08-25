@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class AICrouchAction : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private EnemyController _enemyController;
+
+    private void Start()
     {
-        
+        _enemyController = GetComponent<EnemyController>();
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Crouch")
+        {
+            _enemyController.StartCrouch();
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Crouch")
+        {
+            _enemyController.EndCrouch();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

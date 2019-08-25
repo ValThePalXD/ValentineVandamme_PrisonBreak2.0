@@ -18,6 +18,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
     private bool _isPickingUp;
     private bool _pickedUp;
     private bool _isHitting;
+    private bool _isFalling;
 
     private Vector3 _objectDirection = Vector3.zero;
 
@@ -66,8 +67,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
         if (_isKicking || _isPickingUp || _isHitting)
         {
             return;
-        }
-                  
+        }                  
 
         HandleJoyStickInput();
         MovePlayer();
@@ -77,7 +77,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
         _animationController.SetInputX(_leftJoyStickX);
         _animationController.SetInputY(_leftJoyStickY);
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && !_isFalling)
         {
             _playerMovement.Jump();
             _animationController.Jump();
@@ -85,15 +85,11 @@ public class CharacterControllerBehaviour : MonoBehaviour
     }
 
     #region MovementPlayer
-
     private void MovePlayer()
     {
         _playerMovement.Movement = new Vector3(_leftJoyStickX, 0, _leftJoyStickY);
     }
-
     #endregion
-
-
 
     #region ReloadScene
     private void SceneReload()
@@ -144,17 +140,6 @@ public class CharacterControllerBehaviour : MonoBehaviour
         {
             Fall();
         }
-
-        //if (other.tag == "praying")
-        //{
-        //    _animatorEnemy.SetBool("Found", true);
-        //    _animatorEnemy2.SetBool("Found", true);
-        //    _animator.SetBool("IsPraying", true);
-        //    _movement = Vector3.zero;
-        //    gameLost = true;
-
-
-        //}
     }
     #endregion
 
@@ -263,6 +248,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
     #region Fall
     private void Fall()
     {
+        _isFalling = true;
         _animationController.Falling();
     }
 

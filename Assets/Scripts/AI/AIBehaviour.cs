@@ -7,50 +7,45 @@ using UnityEngine.AI;
 
 public class AIBehaviour : MonoBehaviour
 {
-
     private INode _startNode;
     private NavMeshAgent _agent;
     private Animator _animator;
+    private EnemyController _enemyController;
 
     private bool _caughtPlayer = false;
     private bool _isDead = false;
+    private bool _isCrouching = false;
 
     private readonly float _maxRoamDistance = 10.0f;   
     
     void Start()
     {    
         _animator = gameObject.GetComponent<Animator>();
-
         _agent = gameObject.GetComponent<NavMeshAgent>();
 
         _startNode = new SelectorNode
         (
             new SequenceNode
             (
-                new ConditionNode(IsTrapped),
-                new ActionNode(PlayAngryAnimation)
+                new ConditionNode(IsDead),
+                new ActionNode(StopMoving)
             ),
             new SequenceNode
             (
                 new ConditionNode(Free),
-                new ActionNode(LookingFor)
-
-
-                ),
+                new ActionNode(Patrolling)
+            ),
+             new SequenceNode
+            (
+                new ConditionNode(BehindBlock),
+                new ActionNode(Crouching)
+            ),
              new SequenceNode
             (
                 new ConditionNode(Found),
                 new ActionNode(Aim)
-
-
-             ));
-
+            ));
         StartCoroutine(RunTree());
-
-
-
-
-
     }
 
     IEnumerator RunTree()
@@ -58,64 +53,67 @@ public class AIBehaviour : MonoBehaviour
         while(Application.isPlaying)
         {
             yield return _startNode.Tick();
-
         }
-
-
-
     }
 
     private void Update()
     {
-
         if (_animator.GetBool("Found"))
-        {
-            
+        {            
             _caughtPlayer = true;
         }
 
-        if (_animator.GetBool("IsTrapped"))
+        if (_animator.GetBool("FallDead"))
         {
-            _isDead = true;
+            _isDead = true;           
         }
 
-
+        if (_animator.GetBool("IsCrouching"))
+        {
+            _isCrouching = true;
+        }
     }
 
-    bool IsTrapped()
+    bool IsDead()
     {
         return _isDead;
     }
 
+    bool BehindBlock()
+    {
+        return true;
+    }
 
     bool Free()
     {
         return true;
     }
 
-
-
     bool Found()
-    {
-      
+    {      
         return _caughtPlayer;
     }
 
-    IEnumerator<NodeResult> PlayAngryAnimation()
-    {
 
-      
+    IEnumerator<NodeResult> StopMoving()
+    {      
         _agent.velocity = Vector3.zero;
         _agent.enabled = false;
 
+        yield return NodeResult.Succes;
+    }
+
+    IEnumerator<NodeResult> Crouching()
+    {
+        Debug.Log("crouchyboy");
+        _agent.speed = 1f;
 
         yield return NodeResult.Succes;
     }
 
 
-    IEnumerator<NodeResult> LookingFor()
+    IEnumerator<NodeResult> Patrolling()
     {
-
         AIAnimation();
 
         if (_agent.remainingDistance <= _agent.stoppingDistance)
@@ -131,29 +129,24 @@ public class AIBehaviour : MonoBehaviour
             }
         }
 
-
-
         yield return NodeResult.Succes;
     }
 
 
     IEnumerator<NodeResult> Aim()
-    {
-
-      
+    {              
         _agent.velocity = Vector3.zero;
         _agent.enabled = false;
 
         yield return NodeResult.Succes;
-    }
-        
-
-
-
+    }    
+    
     private void AIAnimation()
     {
-        _animator.SetFloat("InputX", _agent.velocity.x);
-        _animator.SetFloat("InputY", _agent.velocity.z);
+        Vector3 transformedVelocity = transform.TransformDirection(_agent.velocity);
+        _animator.SetFloat("InputX", transformedVelocity.z);
+        _animator.SetFloat("InputY", transformedVelocity.x);
 
     }
+
 }

@@ -119,7 +119,6 @@ public class PlayerMovement : MonoBehaviour
         {
             _velocity += -Physics.gravity.normalized * Mathf.Sqrt(2 * Physics.gravity.magnitude * _jumpHeight);
             _isJumping = false;
-
         }
 
     }

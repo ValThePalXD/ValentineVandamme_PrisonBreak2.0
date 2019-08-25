@@ -1,5 +1,4 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -14,8 +13,7 @@ public class AIBehaviour : MonoBehaviour
 
     private bool _caughtPlayer = false;
     private bool _isDead = false;
-    private bool _isCrouching = false;
-
+   
     private readonly float _maxRoamDistance = 10.0f;   
     
     void Start()
@@ -30,20 +28,15 @@ public class AIBehaviour : MonoBehaviour
                 new ConditionNode(IsDead),
                 new ActionNode(StopMoving)
             ),
-            new SequenceNode
-            (
-                new ConditionNode(Free),
-                new ActionNode(Patrolling)
-            ),
-             new SequenceNode
-            (
-                new ConditionNode(BehindBlock),
-                new ActionNode(Crouching)
-            ),
              new SequenceNode
             (
                 new ConditionNode(Found),
                 new ActionNode(Aim)
+            ),
+             new SequenceNode
+            (
+                new ConditionNode(Free),
+                new ActionNode(Patrolling)
             ));
         StartCoroutine(RunTree());
     }
@@ -66,24 +59,14 @@ public class AIBehaviour : MonoBehaviour
         if (_animator.GetBool("FallDead"))
         {
             _isDead = true;           
-        }
-
-        if (_animator.GetBool("IsCrouching"))
-        {
-            _isCrouching = true;
-        }
+        }               
     }
 
     bool IsDead()
     {
         return _isDead;
     }
-
-    bool BehindBlock()
-    {
-        return true;
-    }
-
+    
     bool Free()
     {
         return true;
@@ -103,19 +86,11 @@ public class AIBehaviour : MonoBehaviour
         yield return NodeResult.Succes;
     }
 
-    IEnumerator<NodeResult> Crouching()
-    {
-        Debug.Log("crouchyboy");
-        _agent.speed = 1f;
-
-        yield return NodeResult.Succes;
-    }
-
-
     IEnumerator<NodeResult> Patrolling()
     {
         AIAnimation();
-
+        _agent.speed = 2;
+        Debug.Log("poop");
         if (_agent.remainingDistance <= _agent.stoppingDistance)
         {
             float newTarget = Random.Range(0, 100);

@@ -109,7 +109,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.8494496
+      - time: 0.9784818
         functionName: StopPickingUp
         data: 
         objectReferenceParameter: {instanceID: 0}

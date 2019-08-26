@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/PrisonBreak2.0.unity
+    guid: 456e1badf4ef7ae4796a3e6768e48457
+  - enabled: 1
+    path: Assets/Scenes/WinScene.unity
+    guid: af53dfb161be2ee418348a9dcf48fdb0
   m_configObjects: {}

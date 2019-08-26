@@ -6,9 +6,8 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(PlayerMovement))]
 public class CharacterControllerBehaviour : MonoBehaviour
 {
-    [Header("Game won?")]
-    [SerializeField]
-    private bool gameWon = false;
+ 
+    public bool _gameWon = false;
 
     private PlayerMovement _playerMovement;
     private AnimationController _animationController; 
@@ -63,6 +62,11 @@ public class CharacterControllerBehaviour : MonoBehaviour
 
     void Update()
     {
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("WinScene"))
+        {            
+            _animationController.Won();
+            return;
+        }
         SceneReload();
         if (_isKicking || _isPickingUp || _isHitting || _isSeen)
         {
@@ -130,7 +134,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
             _enemyController = other.GetComponent<EnemyController>();
             _toHit = tohit;
             _isHitting = true;
-            Hit(other.transform.parent);
+            Hit(other.transform);
             _toHit.DisableHitbox();
             _playerMovement.Stop();
 
@@ -142,12 +146,18 @@ public class CharacterControllerBehaviour : MonoBehaviour
             _enemyController = other.GetComponentInParent<EnemyController>();           
             _isSeen = true;
             _playerMovement.Stop();           
-            Seen(other.transform);
+            Seen(other.transform.parent);
         }
 
         if (other.gameObject.tag == "Fall")
         {
             Fall();
+        }
+
+        if (other.gameObject.tag == "Win")
+        {
+            _playerMovement.Stop();
+            WinGame();
         }
     }
     #endregion
@@ -238,6 +248,7 @@ public class CharacterControllerBehaviour : MonoBehaviour
     #region Hit/Attack
     private void Hit(Transform enemy)
     {
+
         GetObjectDirection(enemy.position);
         StartCoroutine(RotateToObstacle());
         _animationController.Attacking();
@@ -279,6 +290,13 @@ public class CharacterControllerBehaviour : MonoBehaviour
     public void SeenReset()
     {
         ResetGame();
+    }
+    #endregion
+
+    #region WinGame
+    private void WinGame()
+    {
+        SceneManager.LoadScene(1);        
     }
     #endregion
 }

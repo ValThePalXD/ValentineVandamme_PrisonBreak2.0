@@ -10,6 +10,7 @@ TagManager:
   - Fall
   - Crouch
   - Seen
+  - Win
   layers:
   - Default
   - TransparentFX

@@ -13,8 +13,14 @@ public class AnimationController
     private int _falling = Animator.StringToHash("Falling");
     private int _attack = Animator.StringToHash("Attack");
     private int _seen = Animator.StringToHash("Seen");
+    private int _win = Animator.StringToHash("Won");
 
     public readonly PickUpWeaponIK pickUpWeaponIK;    
+
+    public void Won()
+    {
+        _animator.SetTrigger(_win);
+    }
 
     public void Seen()
     {
